@@ -1,7 +1,17 @@
 ﻿namespace OrmComparing.Comparing;
 
-public interface IComparingRepository<T>
+public interface IComparingOrm
 {
     string OrmName { get; set; }
-    Task<List<T>> GetTop10Async();
+
+    void ComplexRawTop10();
+    void ComplexRawTop500();
+    void ComplexTop10();
+    void ComplexTop500();
+    void SimpleRawTop10();
+    void SimpleRawTop10And10();
+    void SimpleRawTop500();
+    void SimpleTop10();
+    void SimpleTop10And10();
+    void SimpleTop500();
 }

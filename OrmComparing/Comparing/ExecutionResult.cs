@@ -2,16 +2,19 @@
 
 public class ExecutionResult
 {
-    public ExecutionResult(string connectionName, TimeSpan time)
+    public ExecutionResult(string comparingTypeName, string operationName, TimeSpan time)
     {
-        ConnectionName = connectionName;
+        ComparingTypeName = comparingTypeName;
+        OperationName = operationName;
         Time = time;
     }
-    public ExecutionResult(string connectionName)
+    public ExecutionResult(string connectionName, string operationName)
     {
-        ConnectionName = connectionName;
+        ComparingTypeName = connectionName;
+        OperationName = operationName;
     }
 
-    public string ConnectionName { get; set; } = null!;
+    public string ComparingTypeName { get; set; } = null!;
+    public string OperationName { get; set; } = null!;
     public TimeSpan Time { get; set; }
 }

@@ -15,9 +15,9 @@ public class CompareResult
     {
         var sb = new StringBuilder();
 
-        foreach (var executionTime in ExecutionResults)
-            sb.Append($"Время выполнения запроса при использовании {executionTime.ConnectionName} " +
-                $"составило {executionTime.Time}{Environment.NewLine}");
+        foreach (var executionResult in ExecutionResults)
+            sb.Append($"Время выполнения запроса {executionResult.OperationName} при использовании {executionResult.ComparingTypeName} " +
+                $"составило {executionResult.Time}{Environment.NewLine}");
 
         return sb.ToString();
     }

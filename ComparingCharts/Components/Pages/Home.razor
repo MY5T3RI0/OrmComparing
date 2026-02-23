@@ -1,0 +1,42 @@
+﻿@page "/"
+@using OrmComparing.Comparing
+@rendermode InteractiveServer
+@inject List<IComparingOrm> ComparingOrms
+
+<ApexChart TItem="ExecutionResult"
+           Title="ORM Performance"
+           Height="400">
+
+    @foreach (var series in SeriesData)
+    {
+        <ApexPointSeries TItem="ExecutionResult"
+                         @key="series.Key"
+                         Items="series.Value"
+                         Name="@series.Key"
+                         SeriesType="SeriesType.Bar"
+                         XValue="e => e.OperationName"
+                         YValue="e => (decimal)e.Time.TotalMilliseconds" />
+    }
+
+</ApexChart>
+
+@code {
+    private Dictionary<string, List<ExecutionResult>> SeriesData = new();
+
+    protected override void OnInitialized()
+    {
+        var ormComparer = new OrmComparer(ComparingOrms);
+        var compareResults = ormComparer.CompareAllOperations();
+
+        var allResults = compareResults
+            .SelectMany(x => x.ExecutionResults)
+            .ToList();
+
+        SeriesData = allResults
+            .GroupBy(x => x.ComparingTypeName)
+            .ToDictionary(
+                g => g.Key,
+                g => g.ToList()
+            );
+    }
+}

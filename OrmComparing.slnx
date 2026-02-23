@@ -1,3 +1,5 @@
 <Solution>
+  <Project Path="ComparingCharts/ComparingCharts.csproj" Id="d343d48f-3dbe-448e-b0e3-49fdf2a943cb" />
   <Project Path="OrmComparing/OrmComparing.csproj" />
+  <Project Path="TestProject/TestProject.csproj" Id="70ac28bd-b6f9-40cf-8dd7-3b8896e962c1" />
 </Solution>

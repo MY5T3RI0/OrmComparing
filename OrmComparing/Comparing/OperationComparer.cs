@@ -1,33 +1,58 @@
 ﻿using System.Diagnostics;
+using System.Reflection;
 
 namespace OrmComparing.Comparing;
 
-public class OperationComparer : IOrmComparer
+public class OperationComparer
 {
     private readonly Stopwatch _stopwatch = new Stopwatch();
 
-    protected async Task<CompareResult> CompareResultsAsync<T>(
-        string[] operationName,
-        Func<Task<T>>[] comparingFunctions)
+    public virtual List<CompareResult> CompareAllOperations()
     {
-        if (operationName.Length != comparingFunctions.Length)
-            throw new InvalidOperationException("Количество сравниваемых операций " +
-                "должно быть равно их количеству");
+        var compareResults = new List<CompareResult>();
 
-        var i = 0;
-        var exectionResults = new ExecutionResult[operationName.Length];
+        var comparingMethodsInfos = GetType().GetMethods().Where(m => m.GetCustomAttribute(typeof(ComparingOperationAttribute), true) != null);
 
-        foreach (var func in comparingFunctions)
+        foreach (var comparingMethodsInfo in comparingMethodsInfos)
         {
-            var executionResult = new ExecutionResult(operationName[i++]);
+            var compareResult = comparingMethodsInfo?.Invoke(this, null) as CompareResult;
 
-            _stopwatch.Restart();
+            if (compareResult != null)
+                compareResults.Add(compareResult);
+        }
 
-            await func();
+        return compareResults;
+    }
 
-            _stopwatch.Stop();
+    protected virtual CompareResult CompareResultsAsync(
+        ComparingInfo[] comparingInfos)
+    {
+        var i = 0;
+        var exectionResults = new ExecutionResult[comparingInfos.Length];
 
-            exectionResults[i - 1] = executionResult;
+        foreach (var comparingInfo in comparingInfos)
+        {
+            var executionResult = new ExecutionResult(comparingInfo.ComparingTypeName, comparingInfo.OperationName);
+
+            var time = new TimeSpan();
+
+            for(var j = 0; j < 5; j++)
+                comparingInfo.Operation(); // Для разогрева
+
+            for (var j = 0; j < 1000; j++)
+            {
+                _stopwatch.Restart();
+
+                comparingInfo.Operation();
+
+                _stopwatch.Stop();
+
+                time += _stopwatch.Elapsed;
+            }
+
+            executionResult.Time = time / 1000;
+
+            exectionResults[i++] = executionResult;
         }
 
         return new(exectionResults);
