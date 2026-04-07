@@ -14,19 +14,24 @@ public static class Entry
 {
     public static IServiceCollection AddOrms(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
+        var connectionString = configuration.GetConnectionString("SqlServer");
+
         serviceCollection.AddDbContext<EfCoreContext>(options =>
         {
-            options.UseSqlServer(configuration.GetConnectionString("SqlServer")!);
+            options.UseSqlServer(connectionString);
             options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         });
 
         serviceCollection.AddLinqToDBContext<Linq2dbConnection>((provider, options)
             => options
-                .UseConnectionString(ProviderName.SqlServer, configuration.GetConnectionString("SqlServer")!)
+                .UseConnectionString(ProviderName.SqlServer, connectionString!)
                 .UseDefaultLogging(provider));
+
+        serviceCollection.AddTransient(_ => new DapperContext(connectionString!));
 
         serviceCollection.AddTransient<IComparingOrm, EfCoreRepo>();
         serviceCollection.AddTransient<IComparingOrm, Linq2dbRepo>();
+        serviceCollection.AddTransient<IComparingOrm, DapperRepo>();
 
         return serviceCollection;
     }
