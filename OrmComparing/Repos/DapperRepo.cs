@@ -94,12 +94,15 @@ JOIN Products P ON OD.ProductID = P.ProductID
 JOIN Categories Cat ON P.CategoryID = Cat.CategoryID
 JOIN Suppliers S ON P.SupplierID = S.SupplierID
 WHERE
-Cat.CategoryID IN (@categoryIds)
-AND S.SupplierID IN (@supplierIds)
+Cat.CategoryID IN @categoryIds
+AND S.SupplierID IN @supplierIds
 ORDER BY OD.Discount DESC
-					".Replace("@categoryIds", string.Join(",", categoryIds))
-                .Replace("@supplierIds", string.Join(",", supplierIds));
-        var list = connection.Query<ComplexQueryRow>(sql).ToList();
+					";
+        var list = connection.Query<ComplexQueryRow>(sql, new
+        {
+            categoryIds,
+            supplierIds
+        }).ToList();
     }
 
     public void SimpleTop10And10()
