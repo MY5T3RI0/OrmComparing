@@ -1,9 +1,9 @@
 ﻿using LinqToDB;
 using LinqToDB.Extensions.DependencyInjection;
-using LinqToDB.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using OrmComparing.Comparing;
 using OrmComparing.DbContexts;
 using OrmComparing.Repos;
@@ -18,14 +18,13 @@ public static class Entry
 
         serviceCollection.AddDbContext<EfCoreContext>(options =>
         {
-            options.UseSqlServer(connectionString);
+            options.UseSqlServer(connectionString).UseLoggerFactory(new LoggerFactory());
             options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         });
 
         serviceCollection.AddLinqToDBContext<Linq2dbConnection>((provider, options)
             => options
-                .UseConnectionString(ProviderName.SqlServer, connectionString!)
-                .UseDefaultLogging(provider));
+                .UseConnectionString(ProviderName.SqlServer, connectionString!));
 
         serviceCollection.AddTransient(_ => new DapperContext(connectionString!));
 
