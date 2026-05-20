@@ -22,7 +22,7 @@ public class Linq2dbRepo : IComparingOrm
             (
                 from o in db.Orders
                 join c in db.Customers on o.CustomerId equals c.CustomerId
-                select new { o.OrderId, o.OrderDate, c.Country, c.CompanyName }
+                select new SimpleQueryRow { OrderId = o.OrderId, OrderDate = o.OrderDate, Country = c.Country, CompanyName = c.CompanyName }
             ).Take(10).ToList();
     }
 
@@ -32,7 +32,7 @@ public class Linq2dbRepo : IComparingOrm
             (
                 from o in db.Orders
                 join c in db.Customers on o.CustomerId equals c.CustomerId
-                select new { o.OrderId, o.OrderDate, c.Country, c.CompanyName }
+                select new SimpleQueryRow { OrderId = o.OrderId, OrderDate = o.OrderDate, Country = c.Country, CompanyName = c.CompanyName }
             ).Take(500).ToList();
     }
 
@@ -71,7 +71,7 @@ JOIN Customers C ON O.CustomerID = C.CustomerID
                 where categoryIds.Contains(cat.CategoryId)
                     && supplierIds.Contains(s.SupplierId)
                 orderby od.Discount descending
-                select new { od.Quantity, od.UnitPrice, od.Discount, o.ShipCountry, s.Country }
+                select new ComplexQueryRow { Quantity = od.Quantity, UnitPrice = od.UnitPrice, Discount = od.Discount, ShipCountry = o.ShipCountry, Country = s.Country }
             ).Take(10).ToList();
     }
 
@@ -90,7 +90,7 @@ JOIN Customers C ON O.CustomerID = C.CustomerID
                 where categoryIds.Contains(cat.CategoryId)
                     && supplierIds.Contains(s.SupplierId)
                 orderby od.Discount descending
-                select new { od.Quantity, od.UnitPrice, od.Discount, o.ShipCountry, s.Country }
+                select new ComplexQueryRow { Quantity = od.Quantity, UnitPrice = od.UnitPrice, Discount = od.Discount, ShipCountry = o.ShipCountry, Country = s.Country }
             ).Take(500).ToList();
     }
 
@@ -142,13 +142,13 @@ ORDER BY OD.Discount DESC
             (
                 from o in db.Orders
                 join c in db.Customers on o.CustomerId equals c.CustomerId
-                select new { o.OrderId, o.OrderDate, c.Country, c.CompanyName }
+                select new SimpleQueryRow { OrderId = o.OrderId, OrderDate = o.OrderDate, Country = c.Country, CompanyName = c.CompanyName }
             ).Take(10).ToList();
         var list2 =
             (
                 from o in db.Orders
                 join c in db.Customers on o.CustomerId equals c.CustomerId
-                select new { o.OrderId, o.OrderDate, c.Country, c.CompanyName }
+                select new SimpleQueryRow { OrderId = o.OrderId, OrderDate = o.OrderDate, Country = c.Country, CompanyName = c.CompanyName }
             ).Take(10).ToList();
     }
 
